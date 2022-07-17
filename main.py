@@ -1,42 +1,46 @@
-from functions import generate_combinations, println, value, value_5
+from functions import value_5
 
-combinations = generate_combinations()
+cards = []
+numbers = []
+symbols = []
+for i in range(0,4):
+	symbols.append(str(i))
+for i in range(1,14):
+	numbers.append(str(i))
+for b in symbols:
+	for i in numbers:
+		
+		cards.append((b,i))
+combinations = []
+for xi, i in enumerate(cards):
+	for xb, b in enumerate(cards):
+		if xi > xb:
+			combinations.append((b,i))
 
-hand = []
 table = []
-
-print("Hand:")
-for i in range(2):
-	hand.append((input("What is the symbol of the card? "), int(input("What is the value of the card? "))))
-
-for c in combinations.copy():
-	if (hand[0] in c or hand[1] in c) and not (hand[0] in c and hand[1] in c):
-		combinations.remove(c)
-
-try:
-	probability = (combinations.index((value(hand[0], hand[1]), hand[0], hand[1]))+1)/len(combinations)
-except ValueError:
-	probability = (combinations.index((value(hand[0], hand[1]), hand[1], hand[0]))+1)/len(combinations)
-if probability < 0.1:
-	probability = ("0" +str(probability*100))[0:5] + "%"
-else:
-	probability = str(probability*100)[0:5] + "%"
-
-print(probability)
-
-print("Table:")
-for i in range(3):
-	table.append((input("What is the symbol of the card? "), int(input("What is the value of the card? "))))
-
-for c in combinations.copy():
-	if (table[0] in c or table[1] in c or table[2] in c) and not (table[0] in c and table[1] in c) and not (table[1] in c and table[2] in c) and not (table[0] in c and table[2] in c):
-		combinations.remove(c)
-
-table_values = []
-
+table_combinations = []
+print(cards)
+for xa, a in enumerate(cards):
+	print(a)
+	for xb, b in enumerate(cards):
+		if xa < xb:
+			for xc, c in enumerate(cards):
+				if xb < xc:
+					for xd, d in enumerate(cards):
+						if xc < xd :
+							for xe, e in enumerate(cards):
+								if xd < xe:
+										table_combinations.append((a,b,c,d,e))
+values = []
 for c in combinations:
-	cards = table
-	cards.append(c[1])
-	cards.append(c[2])
-	table_values.append(value_5(cards))
-	print(table_values[-1])
+	for t in table_combinations:
+		not_possible = False
+		for card in c:
+			if card in t:
+				not_possible = True
+		if not not_possible:
+			print(a)
+			a = list(c+t)
+			k = value_5(a)
+			values.append(k)
+print(values)
