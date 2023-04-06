@@ -1,9 +1,5 @@
-# card: [symbol, number]
-# symbols: 1-clubs, 2-diamonds, 3-hearts, 4-spades
-# numbers: 2-2, 3-3, 4-4, 5-5, 6-6, 7-7, 8-8, 9-9, 10-10, 11-jack, 12-queen, 13-king, 14-ace
-
 import random
-import ast
+import time
 
 def RoyalFlush(cards, numbers, symbols):
     if numbers[9] > 0 and numbers[12] > 0:
@@ -129,33 +125,37 @@ def EvaluatePosition(cards, playerHand, tableCards, depth):
     return totalScore
 
 def Main():
+    times = []
+
+    scores = []
     cards = []
+    handCards = []
     for a in range(1, 5):
         for b in range (2, 15):
+            if a < 3:
+                handCards.append([a, b])
             cards.append([a,b])
-            
-    playerHand = []
-    for i in range(2):
-        playerHand.append(ast.literal_eval("[" + input(f"What's the {i+1}. card in your hand? ") + "]"))
-        cards.remove(playerHand[-1])
-        
-    print(EvaluatePosition(cards, playerHand, []))
-    print("")
-    
-    table = []
-    for i in range(3):
-        table.append(ast.literal_eval("[" + input(f"What's the {i+1}. card on the table? ") + "]"))
-        cards.remove(table[-1])
-        
-    print(EvaluatePosition(cards, playerHand, table))
-    print("")
-    
-    for i in range(4, 6):
-        table.append(ast.literal_eval("[" + input(f"What's the {i}. card on the table? ") + "]"))
-        cards.remove(table[-1])
-        
-        print(EvaluatePosition(cards, playerHand, table))
-        print("")
 
+    for card in handCards:
+        time1 = time.time()
+        for card2 in handCards:
+            if card != card2:
+                if card2[1] >= card[1] and card2[0] >= card[0]:
+                    playerHand = [card, card2]
+                    possibleCards = cards.copy()
+                    possibleCards.remove(card)
+                    possibleCards.remove(card2)
+                    scores.append([playerHand, EvaluatePosition(possibleCards, playerHand, [], 9900)])
+                    print(scores[-1])
+        time2 = time.time()
+        times.append(time2-time1)
+
+    print(sum(times) / len(times))
+    print(len(times))
+    print(sum(times))
+
+    with open("scores.txt", "w") as f:
+        f.writelines(str(scores))
+    
 if __name__ == "__main__":
-	Main()
+    Main()
